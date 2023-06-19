@@ -10,8 +10,7 @@ To set up your development environment, please follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://gitlab.com/caustaza_group/caustaza_backend.git
-   cd caustaza` 
+   git clone https://gitlab.com/caustaza_group/caustaza_backend.git` 
 
 2.  Navigate to the `caustaza_backend` directory:
         
