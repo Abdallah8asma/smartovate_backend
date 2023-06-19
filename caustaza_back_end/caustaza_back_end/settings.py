@@ -11,12 +11,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from decouple import config
-from .jazzmin import JAZZMIN_SETTINGS,JAZZMIN_UI_TWEAKS 
+from .jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_TWEAKS 
+from pathlib import Path
+import environ
 
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -78,15 +82,16 @@ WSGI_APPLICATION = 'caustaza_back_end.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASS"),
+        "HOST": env("DATABASE_HOST"),
+        "PORT": env("DATABASE_PORT"),  # leave blank so the default port is selected
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -126,6 +131,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-JAZZMIN_SETTINGS=JAZZMIN_SETTINGS
-JAZZMIN_UI_TWEAKS =JAZZMIN_UI_TWEAKS 
+# Jazzmin settings for configuration of the tweaks of admin panel
+JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
+JAZZMIN_UI_TWEAKS = JAZZMIN_UI_TWEAKS 
