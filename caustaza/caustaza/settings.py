@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 # Standard library imports
+import os
 from pathlib import Path
 import environ
+from .jazzmin import JAZZMIN_SETTINGS,JAZZMIN_UI_TWEAKS 
 
 # Initialise environment variables
 env = environ.Env()
@@ -37,6 +39,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,9 +49,11 @@ INSTALLED_APPS = [
     # Third party apps
     "rest_framework",
     "ckeditor_uploader",
+    'ckeditor',
     "drf_spectacular",
     # Local apps
     "about",
+    "index",
 ]
 
 MIDDLEWARE = [
@@ -153,10 +158,33 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = "static/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# CKEDITOR_CONFIGS 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'extraPlugins': ','.join([
+            'autoembed',
+        ]),
+      'toolbar':'full',
+        'width': '500px',  # Adjust the width value as needed
+    },
+}
+
+# JAZZMIN_SETTINGS
+
+JAZZMIN_SETTINGS=JAZZMIN_SETTINGS
+JAZZMIN_UI_TWEAKS =JAZZMIN_UI_TWEAKS 
