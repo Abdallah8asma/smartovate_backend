@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+# Standard library imports
 from pathlib import Path
 import environ
 
@@ -42,6 +43,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third party apps
+    "rest_framework",
+    "ckeditor_uploader",
+    "drf_spectacular",
+    # Local apps
+    "about",
 ]
 
 MIDDLEWARE = [
@@ -116,6 +123,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Rest Framework settings for pagination of API results (10 results per page)
+# https://www.django-rest-framework.org/api-guide/pagination/
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Caustaza API",
+    "DESCRIPTION": "API for Caustaza website",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
