@@ -6,7 +6,7 @@ class PageindexSerializer(serializers.ModelSerializer):
         model = Pageindex
         fields = '__all__'
 
-class FeaadbackSerializer(serializers.ModelSerializer):
+class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedbackClient
         fields = ('id','name','avatar','description',)
