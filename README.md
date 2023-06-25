@@ -78,3 +78,38 @@ We welcome contributions to Caustaza! If you'd like to contribute, please follow
 6.  Provide a detailed description of your changes and any relevant information.
     
 7.  Wait for a code review and address any feedback.
+
+## Dockerizing
+
+ ### rerequisites
+Docker and Docker Compose should be installed on your machine.
+ ### Steps to follow 
+1. Navigate to the project directory:
+
+  cd <caustaza_backend/caustaza>
+
+3. Build and Start the Containers
+
+Run the following command to build and start the containers using Docker Compose:
+
+  <docker-compose up --build>
+
+This command will build the necessary Docker images and start the containers defined in the docker-compose.yml file.
+
+4. Access the Django Container Interface
+
+Open your web browser and enter the following URL:
+
+  'http://localhost:8000'
+
+This will take you to the interface of your Django application running inside the Docker container.
+
+5. Access the pgAdmin Interface
+
+Open your web browser and enter the following URL:
+
+  'http://localhost:5050'
+
+This will open the pgAdmin interface, which allows you to manage and interact with the PostgreSQL database container.
+
+That's it! You should now be able to access the Django container interface at http://localhost:8000 and the pgAdmin interface at http://localhost:5050 while running the application inside Docker containers.
