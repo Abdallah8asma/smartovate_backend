@@ -86,13 +86,13 @@ Docker and Docker Compose should be installed on your machine.
  ### Steps to follow 
 1. Navigate to the project directory:
 
-  cd <caustaza_backend/caustaza>
+  `cd caustaza_backend/caustaza` 
 
 3. Build and Start the Containers
 
 Run the following command to build and start the containers using Docker Compose:
 
-  <docker-compose up --build>
+  `docker-compose up --build` 
 
 This command will build the necessary Docker images and start the containers defined in the docker-compose.yml file.
 
