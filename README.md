@@ -81,7 +81,7 @@ We welcome contributions to Caustaza! If you'd like to contribute, please follow
 
 ## Dockerizing
 
- ### rerequisites
+ ### Rerequisites
 Docker and Docker Compose should be installed on your machine.
  ### Steps to follow 
 1. Navigate to the project directory:
