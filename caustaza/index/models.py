@@ -24,11 +24,6 @@ class Pageindex(models.Model):
         return "%s" % (self.title)
 
 
-class newsletter(models.Model):
-   email = models.EmailField(max_length=254, blank=True, null=True) 
-
-   def __str__(self):
-        return self.email
 
 
 #model for our clients

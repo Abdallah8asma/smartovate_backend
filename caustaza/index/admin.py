@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pageindex, newsletter, FeedbackClient
+from .models import Pageindex, FeedbackClient
 
 @admin.register(Pageindex)
 class PageindexAdmin(admin.ModelAdmin):
@@ -23,11 +23,6 @@ class PageindexAdmin(admin.ModelAdmin):
     list_filter = (
         'title',
     )
-
-@admin.register(newsletter)
-class NewsletterAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email')
-    list_filter = ('email',)
 
 @admin.register(FeedbackClient)
 class FeedbackClientAdmin(admin.ModelAdmin):

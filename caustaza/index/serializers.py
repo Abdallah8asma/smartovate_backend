@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Pageindex,FeedbackClient, newsletter
+from .models import Pageindex,FeedbackClient
 
 class PageindexSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,9 +11,3 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = FeedbackClient
         fields = ('id','name','avatar','description',)
 
-class NewsletterSerializer(serializers.ModelSerializer):   
-    class Meta:
-        model = newsletter
-        fields = ('email',)
-    def create(self, validated_data):
-        return newsletter.objects.create(**validated_data)
