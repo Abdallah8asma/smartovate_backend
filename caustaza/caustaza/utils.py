@@ -1,7 +1,8 @@
 import string
 from translate import Translator
 from django.utils.text import slugify
-
+from django.core.mail import EmailMessage
+import threading
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random_string_generator.choice(chars) for _ in range(size))
@@ -54,3 +55,30 @@ def translate_data(data):
         translated_data.append(translated_item)
     return translated_data
     
+class EmailThread(threading.Thread):
+    """
+    Custom thread class for sending emails asynchronously.
+    """
+
+    def __init__(self, email):
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send()
+
+class EmailUtil:
+    @staticmethod
+    def send_email(data):
+        """
+        Send an email using the provided data.
+
+        Args:
+            data (dict): A dictionary containing email data.
+                - email_subject (str): The subject of the email.
+                - email_body (str): The body of the email.
+                - to_email (str): The recipient's email address.
+        """
+        email = EmailMessage(
+            subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
+        EmailThread(email).start()

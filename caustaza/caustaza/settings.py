@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "about",
     "index",
     "service",
+    "contact",
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,17 @@ DATABASES = {
         "PORT": env("DATABASE_PORT"),  # leave blank so the default port is selected
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = env('EMAIL_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', cast=bool)
+APPLICATION_EMAIL = 'caustaza<caustaza@gmail.com'
+DEFAULT_FROM_EMAIL = 'caustaza<caustaza@gmail.com>'
+
+
 
 
 # DATABASES = {
