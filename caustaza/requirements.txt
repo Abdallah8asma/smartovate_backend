@@ -26,5 +26,5 @@ PyYAML==6.0
 sqlparse==0.4.4
 typing_extensions==4.6.3
 uritemplate==4.1.1
-translate
-Pillow
+translate==9.5.0
+Pillow==9.5.0
