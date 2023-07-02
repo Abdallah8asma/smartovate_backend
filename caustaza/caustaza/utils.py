@@ -40,7 +40,9 @@ def translate_data(data):
         for field in item._meta.fields:
             field_name = field.name
             field_value = getattr(item, field_name)
-            if isinstance(field_value, (int, float)):
+            if field_name == 'image':
+                translated_item[field_name] = field_value.url if field_value else None
+            elif isinstance(field_value, (int, float)):
                 translated_item[field_name] = field_value
             else:
                 translated_item[field_name] = {}

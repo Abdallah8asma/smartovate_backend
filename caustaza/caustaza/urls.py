@@ -18,16 +18,20 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("AboutUs/", include("about.urls")),
-    path('index/', include('index.urls')),
-    path('service/', include('service.urls')),
-    path('contact/', include('contact.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-
+    path("admin/", admin.site.urls),                         # URL for Django admin interface
+    path("AboutUs/", include("about.urls")),                 # URL for AboutUs app
+    path('index/', include('index.urls')),                    # URL for index app
+    path('service/', include('service.urls')),                # URL for service app
+    path('contact/', include('contact.urls')),                # URL for contact app
+    path('team/', include('team.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),     # URL for CKEditor file uploader
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),    # URL for API schema
+    path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="docs")   # URL for Swagger documentation
 ]
 
+# Serve media files during development when DEBUG is enabled
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

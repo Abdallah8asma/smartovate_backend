@@ -2,10 +2,12 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from caustaza.utils import translate_data
+from rest_framework import permissions
 from .serializers import *
 from .models import *
 
 class ServicesIndexListView(ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Services.objects.all().filter(page_index_published=True)
     serializer_class = ServicesSerializer
     pagination_class = None
@@ -24,6 +26,7 @@ class ServicesIndexListView(ListAPIView):
 
 
 class ServicesListView(ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Services.objects.all()
     serializer_class = ServicesSerializer
     pagination_class = None
@@ -42,6 +45,7 @@ class ServicesListView(ListAPIView):
 
 
 class ServiceListView(ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     pagination_class = None

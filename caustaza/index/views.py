@@ -2,11 +2,13 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from caustaza.utils import translate_data
+from rest_framework import permissions
 from .serializers import *
 from .models import *
 
 
 class PageindexListView(ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Pageindex.objects.all()
     serializer_class = PageindexSerializer
     pagination_class = None
@@ -25,6 +27,7 @@ class PageindexListView(ListAPIView):
 
 
 class FeedbackClientListView(ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = FeedbackClient.objects.all()[:3]
     serializer_class = FeedbackSerializer
     pagination_class = None
