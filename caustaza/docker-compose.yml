@@ -1,0 +1,52 @@
+version: '3'
+services:
+  postgreSql:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+      POSTGRES_DB: Intern
+    volumes:
+     - postData:/var/lib/postgresql/data
+    networks:
+      - net
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    networks:
+      - net
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      SECRET_KEY: "YES"
+      DATABASE_HOST: postgreSql
+      DATABASE_PORT: 5432
+      DATABASE_NAME: Intern
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgreSql
+    networks:
+      - net
+   
+volumes:
+  postData:
+
+networks:
+  net:
+    driver: bridge

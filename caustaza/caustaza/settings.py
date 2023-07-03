@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 # Standard library imports
+import os
 from pathlib import Path
 import environ
+from .jazzmin import JAZZMIN_SETTINGS,JAZZMIN_UI_TWEAKS 
 
 # Initialise environment variables
 env = environ.Env()
@@ -37,6 +39,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
+    "Users",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,9 +50,15 @@ INSTALLED_APPS = [
     # Third party apps
     "rest_framework",
     "ckeditor_uploader",
+    'ckeditor',
     "drf_spectacular",
     # Local apps
     "about",
+    "index",
+    "service",
+    "contact",
+    "team",
+    
 ]
 
 MIDDLEWARE = [
@@ -59,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
 ]
 
 ROOT_URLCONF = "caustaza.urls"
@@ -95,6 +106,17 @@ DATABASES = {
         "PORT": env("DATABASE_PORT"),  # leave blank so the default port is selected
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = env('EMAIL_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', cast=bool)
+APPLICATION_EMAIL = 'caustaza<caustaza@gmail.com'
+DEFAULT_FROM_EMAIL = 'caustaza<caustaza@gmail.com>'
+
+
 
 
 # DATABASES = {
@@ -153,10 +175,33 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = "static/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# CKEDITOR_CONFIGS 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'extraPlugins': ','.join([
+            'autoembed',
+        ]),
+      'toolbar':'full',
+        'width': '500px',  # Adjust the width value as needed
+    },
+}
+
+# JAZZMIN_SETTINGS
+
+JAZZMIN_SETTINGS=JAZZMIN_SETTINGS
+JAZZMIN_UI_TWEAKS =JAZZMIN_UI_TWEAKS 
