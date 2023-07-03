@@ -18,18 +18,7 @@ DOCKER_EXPOSE_PORT := 8080
 PIP := python -m pip
 
 # Env variables for different providers
-REDIS_URL := redis://172.18.0.2
-BINANCE_PROVIDER=binance
-BINANCE_URI=wss://stream.binance.com:9443/stream
-BITSTAMP_PROVIDER=bitstamp
-BITSTAMP_URI=wss://ws.bitstamp.net
-KRAKEN_PROVIDER=kraken
-KRAKEN_URI=wss://ws.kraken.com
-COINBASE_PROVIDER=coinbase
-COINBASE_URI=wss://ws-feed.exchange.coinbase.com
-B2C2_PROVIDER=b2c2
-B2C2_URI=wss://socket.uat.b2c2.net/quotes
-B2C2_TOKEN=c9e56959414344c15b0039b5f835cab595746b63
+
 
 .PHONY: clean lint unit_tests redis docker_build docker_run serve
 
@@ -42,8 +31,11 @@ clean:
 # Create a Python virtual environment
 # $(SOURCE_VENV) && $(PIP) install proto/tradias_proto*.whl
 # $(SOURCE_VENV) && $(PIP) install -r requirements.txt
-# excluded those because we dont have them yet, i guess.
+# excluded .whl because we dont have it yet, for testing purposes we excluded requirements.txt as well.
+
+# !IMPORTANT, in order to fix psycopg2 error, you need to install gcc and libpq-dev, which already taken care of.
 venv:
+	sudo apt-get -y install libpq-dev && sudo apt-get -y install gcc
 	$(PYTHON_INTERPRETER) -m venv $(VENV_DIR)
 	$(SOURCE_VENV) && $(PIP) install --upgrade pip
 	$(SOURCE_VENV) && $(PIP) install -r requirements_test.txt
@@ -66,31 +58,7 @@ docker_clean:
 unit_tests: venv
 	$(SOURCE_VENV) && python -m pytest
 
-# Run redis
-redis:
-		docker-compose up -d redis
-
 # function for running docker image based on given env variables
 define run_provider
 	docker run --init -it --rm --name caustaza --network host --env-file .env --env PROVIDER=$(1) --env URI=$(2) --env TOKEN=$(3) -p $(DOCKER_EXPOSE_PORT):8080 $(DOCKER_SERVER_IMAGE_TAG):$(DOCKER_IMAGE_VERSION)
 endef
-
-# Call run_provider for kraken
-run_kraken:
-		$(call run_provider,$(KRAKEN_PROVIDER),$(KRAKEN_URI))
-
-# Call run_provider for bitstamp
-run_bitstamp:
-		$(call run_provider,$(BITSTAMP_PROVIDER),$(BITSTAMP_URI))
-
-# Call run_provider for binance
-run_binance:
-		$(call run_provider,$(BINANCE_PROVIDER),$(BINANCE_URI))
-
-# Call run_provider for coinbase
-run_coinbase:
-		$(call run_provider,$(COINBASE_PROVIDER),$(COINBASE_URI))
-
-# Call run_provider for b2c2
-run_b2c2:
-		$(call run_provider,$(B2C2_PROVIDER),$(B2C2_URI),$(B2C2_TOKEN))
