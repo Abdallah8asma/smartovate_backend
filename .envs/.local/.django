@@ -1,0 +1,4 @@
+# General
+# ------------------------------------------------------------------------------
+export USE_DOCKER=yes
+export IPYTHONDIR=/app/.ipython
