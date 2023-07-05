@@ -94,4 +94,15 @@ This project includes several shortcuts to streamline the development process:
     ```bash
     make build-prod
     ```
+
+- **Run dev environment:**
+    ```bash
+    make run-dev
+    ```
+
+- **Stop dev environment:**
+    ```bash
+    make stop-dev
+    ```
+    
 ---
