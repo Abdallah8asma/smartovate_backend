@@ -1,115 +1,108 @@
+# Caustaza Backend Project
 
-# Caustaza
+Caustaza Backend Project
 
-Welcome to Caustaza! This is a Django project containing the basic setup for now.
+[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
+[![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-## Environment Setup
+## Settings & Installation with Docker
 
-To set up your development environment, please follow these steps:
+- Getting Up and Running Locally With Docker : visit this [:link:](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html)
 
-1. Clone the repository:
+## Basic Commands
 
-   ```bash
-   git clone https://gitlab.com/caustaza_group/caustaza_backend.git` 
+### Setting Up Your Users
 
-2.  Navigate to the `caustaza_backend` directory:
-        
-    `cd caustaza_backend` 
+- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+
+- To create a **superuser account**, use this command:
+
+      $ python manage.py createsuperuser
+
+For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+
+### Type checks
+
+Running type checks with mypy:
+
+    $ mypy caustaza_backend_project
+
+### Test coverage
+
+To run the tests, check your test coverage, and generate an HTML coverage report:
+
+    $ coverage run -m pytest
+    $ coverage html
+    $ open htmlcov/index.html
+
+#### Running tests with pytest
+
+    $ pytest
+
+### Live reloading and Sass CSS compilation
+
+Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
+
+## Deployment
+
+The following details how to deploy this application.
+
+### Docker
+
+See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+
+## Shortcuts 🔑
+
+This project includes several shortcuts to streamline the development process:
+
+- **Create migrations:**
+    ```bash
+    make make-migrations
+    ```
+
+- **Run migrations:**
+    ```bash
+    make migrate
+    ```
+
+- **Run the linter:**
+    ```bash
+    make lint
+    ```
+
+- **Run the formatter:**
+    ```bash
+    make format
+    ```
+
+- **Run the tests:**
+    ```bash
+    make test
+    ```
+
+- **Create a super user:**
+    ```bash
+    make super-user
+    ```
+
+- **Build and run dev environment:**
+    ```bash
+    make build-dev
+    ```
+
+- **Build and run prod environment:**
+    ```bash
+    make build-prod
+    ```
+
+- **Run dev environment:**
+    ```bash
+    make run-dev
+    ```
+
+- **Stop dev environment:**
+    ```bash
+    make stop-dev
+    ```
     
-3.  Create a virtual environment (optional but recommended):
-        
-    `python3 -m venv env
-    source env/bin/activate` 
-    
-4.  Install the dependencies:
-        
-    `pip install -r requirements.txt` 
-    
-5.  Ensure you have PostgreSQL 15 installed and running.
-    
-
-## Running the Project
-
-To run the Caustaza project, follow these steps:
-
-1.  Navigate to the root project directory:
-        
-    `cd caustaza` 
-    
-2.  Activate the virtual environment if you created one:
-        
-    `source ../env/bin/activate` 
-
-
-3.  Follow the .example.env and create your own with the name : `.env`
-        
-
-4.  Run the Django necessary migrations:
-        
-    `python caustaza/manage.py migrate` 
-
-5.  Run the Django development server:
-        
-    `python caustaza/manage.py runserver` 
-    
-    The server will start running locally at `http://localhost:8000/`.
-    
-
-## Contributing
-
-We welcome contributions to Caustaza! If you'd like to contribute, please follow these steps:
-
-1.  Clone the repository.
-    
-2.  Create a new branch for your feature or bug fix:
-        
-    `git checkout -b feature/new-feature` 
-    
-    Replace `feature/new-feature` with an appropriate name for your branch.
-    
-3.  Make your changes and commit them.
-    
-4.  Push your changes to your forked repository:
-        
-    `git push origin feature/new-feature` 
-    
-5.  Open a pull request against the `dev` branch of the original repository.
-    
-6.  Provide a detailed description of your changes and any relevant information.
-    
-7.  Wait for a code review and address any feedback.
-
-## Dockerizing
-
- ### Prerequisites
-Docker and Docker Compose should be installed on your machine.
- ### Steps to follow 
-1. Navigate to the project directory:
-
-  `cd caustaza_backend/caustaza` 
-
-3. Build and Start the Containers
-
-Run the following command to build and start the containers using Docker Compose:
-
-  `docker-compose up --build` 
-
-This command will build the necessary Docker images and start the containers defined in the docker-compose.yml file.
-
-4. Access the Django Container Interface
-
-Open your web browser and enter the following URL:
-
-  'http://localhost:8000'
-
-This will take you to the interface of your Django application running inside the Docker container.
-
-5. Access the pgAdmin Interface
-
-Open your web browser and enter the following URL:
-
-  'http://localhost:5050'
-
-This will open the pgAdmin interface, which allows you to manage and interact with the PostgreSQL database container.
-
-That's it! You should now be able to access the Django container interface at http://localhost:8000 and the pgAdmin interface at http://localhost:5050 while running the application inside Docker containers.
+---
