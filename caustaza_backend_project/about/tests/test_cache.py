@@ -1,9 +1,9 @@
-from django.core.cache import cache
 from unittest.mock import patch
 
-from caustaza_backend_project.about.views import AboutViewSet
+from django.core.cache import cache
 
 from caustaza_backend_project.about.tests.test_setup import AboutSetup
+from caustaza_backend_project.about.views import AboutViewSet
 
 
 class AboutCacheTestCase(AboutSetup):

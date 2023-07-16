@@ -1,6 +1,6 @@
-from modeltranslation.translator import TranslationOptions
+from modeltranslation.translator import TranslationOptions, translator
+
 from .models import About
-from modeltranslation.translator import translator
 
 
 class AboutTranslationOptions(TranslationOptions):
