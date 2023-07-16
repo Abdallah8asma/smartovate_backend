@@ -1,15 +1,18 @@
 from django.db import models
-from ckeditor_uploader.fields import RichTextUploadingField
-from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
-# Create your models here.
 class About(models.Model):
-    """about model."""
+    title = models.CharField(_("title"), max_length=255)
+    subtitle = models.CharField(_("subtitle"), max_length=255, blank=True)
+    meta_title = models.CharField(_("meta title"), max_length=255, blank=True)
+    meta_description = models.CharField(_("meta description"), max_length=255, blank=True)
+    description = models.TextField(_("description"), blank=True)
+    long_description = models.TextField(_("long description"), blank=True)
 
-    title = models.CharField(max_length=250, blank=True, null=True)
-    subtitle = models.CharField(max_length=250, blank=True, null=True)
-    meta_title = models.CharField(max_length=250, blank=True, null=True)
-    meta_description = models.CharField(max_length=250, blank=True, null=True)
-    description = models.CharField(max_length=250, blank=True, null=True)
-    long_description = RichTextUploadingField(max_length=250, blank=True, null=True)
+    class Meta:
+        verbose_name = _("about")
+        verbose_name_plural = _("about")
+
+    def __str__(self):
+        return self.title

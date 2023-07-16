@@ -26,7 +26,7 @@ help:
 	@echo "$$HELP"
 
 lint:
-	 @docker-compose -f local.yml run --rm django black caustaza_backend_project 
+	 @docker-compose -f local.yml run --rm django black caustaza_backend_project
 
 format:
 	@docker-compose -f local.yml run --rm django black caustaza_backend_project/
