@@ -1,6 +1,6 @@
-from rest_framework import status
-from django.core.files.uploadedfile import SimpleUploadedFile
 import os
+
+from rest_framework import status
 
 from caustaza_backend_project.services.tests.test_setup import ServiceSetup
 

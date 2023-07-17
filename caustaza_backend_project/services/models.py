@@ -15,7 +15,7 @@ class Service(models.Model):
         return self.title
 
     def image_tag(self):
-        return format_html('<img href="{0}" src="{0}" width="150" height="150" />'.format(self.image.url))
+        return '<img href="{0}" src="{0}" width="150" height="150" />'.format(self.image.url)
 
     image_tag.allow_tags = True
     image_tag.short_description = "Image"

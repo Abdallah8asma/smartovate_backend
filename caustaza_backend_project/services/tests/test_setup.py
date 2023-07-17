@@ -1,6 +1,6 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from caustaza_backend_project.services.models import Service
 
