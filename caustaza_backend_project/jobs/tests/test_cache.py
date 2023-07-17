@@ -25,6 +25,6 @@ class JobsCacheTestCase(JobsSetup):
             # Retrieve the Job object again using the view
             request = self.factory.get("/job/")
             response = view(request)
-            data = response.data[:1]
+            response = response.data[:1]
             # Verify that the Job object was retrieved from the cache
-            self.assertEqual(data, data)
+            self.assertEqual(data, response)
