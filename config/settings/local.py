@@ -11,7 +11,7 @@ SECRET_KEY = env(
     default="M614bxZxJVW7DQ7FprZZkNJgMPQSFPNwsT5SlrODh9siIoHYpIQ9vPFntrrKc0lL",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["8000-caustazagro-caustazabac-m5wek099cs5.ws-eu101.gitpod.io", "127.0.0.1"]
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -54,3 +54,4 @@ INSTALLED_APPS += ["django_extensions"]  # noqa: F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+CSRF_TRUSTED_ORIGINS = ["https://8000-caustazagro-caustazabac-m5wek099cs5.ws-eu101.gitpod.io", "http://*"]

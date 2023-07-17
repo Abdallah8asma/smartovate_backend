@@ -57,11 +57,17 @@ AZURE_ACCOUNT_NAME = env("DJANGO_AZURE_ACCOUNT_NAME")
 AZURE_CONTAINER = env("DJANGO_AZURE_CONTAINER_NAME")
 # STATIC
 # ------------------------
-STATICFILES_STORAGE = "caustaza_backend_project.utils.storages.StaticRootAzureStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "caustaza_backend_project.utils.storages.MediaRootAzureStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "caustaza_backend_project.utils.storages.StaticRootAzureStorage",
+    },
+}
 STATIC_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/static/"
 # MEDIA
 # ------------------------------------------------------------------------------
-DEFAULT_FILE_STORAGE = "caustaza_backend_project.utils.storages.MediaRootAzureStorage"
 MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
 
 # EMAIL

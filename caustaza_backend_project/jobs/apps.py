@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AboutConfig(AppConfig):
+class JobsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "caustaza_backend_project.about"
+    name = "caustaza_backend_project.jobs"

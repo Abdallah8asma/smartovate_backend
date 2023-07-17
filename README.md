@@ -104,5 +104,5 @@ This project includes several shortcuts to streamline the development process:
     ```bash
     make stop-dev
     ```
-    
+
 ---

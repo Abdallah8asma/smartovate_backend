@@ -2,16 +2,16 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TabbedTranslationAdmin
 
-from .models import About
+from caustaza_backend_project.jobs.models import Job
 
 
-@admin.register(About)
+@admin.register(Job)
 class AboutAdmin(TabbedTranslationAdmin):
     tabs = [
         (
             _("General"),
             {
-                "fields": ("title", "subtitle", "description", "long_description"),
+                "fields": ("title", "subtitle", "description"),
             },
         ),
         (
