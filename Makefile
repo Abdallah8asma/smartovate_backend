@@ -10,8 +10,8 @@ make test           	Run tests
 make super-user     	Create super user
 make make-migrations 	Make migrations
 make migrate        	Migrate
-make run-local	  		Run local environment
-make stop-local	  		Stop local environment
+make run-dev	  		Run local environment
+make stop-dev	  		Stop local environment
 make build-dev      	Build and run dev environment
 make stop-dev       	Stop dev environment
 make stop-prod      	Stop prod environment
@@ -55,12 +55,12 @@ stop-dev:
 stop-prod:
 	@docker-compose -f production.yml down
 
-run-local:
+run-dev:
 	@docker-compose -f local.yml up -d
 
-stop-local:
+stop-dev:
 	@docker-compose -f local.yml down
 
 all: help
 
-.PHONY: help lint format test super-user make-migrations migrate build-dev build-prod stop-dev stop-prod all run-local stop-local
+.PHONY: help lint format test run-dev stop-dev super-user make-migrations migrate build-dev build-prod stop-dev stop-prod all
