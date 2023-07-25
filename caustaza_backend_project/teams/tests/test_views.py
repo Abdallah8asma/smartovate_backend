@@ -1,7 +1,4 @@
-import os
 from rest_framework import status
-from django.urls import reverse
-import json
 
 from .test_setup import TeamSetup
 
@@ -13,7 +10,6 @@ class TestTeamViews(TeamSetup):
         """Test that the API returns a list of teams with the correct data."""
 
         response = self.client.get(self.index_url)
-
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, "team")
@@ -40,5 +36,3 @@ class TestTeamViews(TeamSetup):
         # self.assertEqual(team_member2_data["location"], "London")
         # self.assertEqual(team_member2_data["description"], "Team member 2 description")
         # self.assertEqual(os.path.basename(team_member2_data["image"]),  self.test_image.name)
-
-

@@ -1,6 +1,6 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
-from rest_framework.test import APIClient, APITestCase,APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory, APITestCase
 
 from caustaza_backend_project.teams.models import Team, TeamMember
 
@@ -36,9 +36,8 @@ class TeamSetup(APITestCase):
             title="Team A",
             subtitle="Subtitle for Team A",
             description="Description for Team A",
-
         )
-         # Add team members to the team
+        # Add team members to the team
         self.team.teammember.add(self.team_member1, self.team_member2)
 
     def tearDown(self):

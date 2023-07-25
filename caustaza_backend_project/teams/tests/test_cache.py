@@ -1,8 +1,9 @@
 from unittest.mock import patch
+
 from django.core.cache import cache
-from rest_framework.test import APITestCase
 
 from caustaza_backend_project.teams.views import TeamViewSet
+
 from .test_setup import TeamSetup
 
 
@@ -32,4 +33,3 @@ class TestTeamCache(TeamSetup):
             self.assertEqual(new_data[0]["title"], data[0]["title"])
             self.assertEqual(new_data[0]["subtitle"], data[0]["subtitle"])
             self.assertEqual(new_data[0]["description"], data[0]["description"])
-
