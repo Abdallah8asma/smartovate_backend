@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from userpayment.views import checkout_session
+from userpayment.views import stripe_webhook,stripe_webhook,create_checkout_session
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
@@ -24,9 +24,16 @@ urlpatterns += [
         name="api-docs",
     ),
     path(
-         "checkout-session/<price>/<currency>",
-            checkout_session,
-            name="checkout-session" )
+         "create_checkout_session/<int:price>/'",
+            create_checkout_session,
+            name="stripe_webhook" ),
+
+
+    path(
+         "webhook/stripe",
+            stripe_webhook,
+            name="stripe_webhook" )
+
 ]
 
 # if settings.DEBUG:

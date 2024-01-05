@@ -4,7 +4,7 @@ from caustaza_backend_project.about.views import AboutViewSet
 from caustaza_backend_project.jobs.views import JobsViewSet
 from caustaza_backend_project.services.views import ServiceViewSet
 from caustaza_backend_project.teams.views import TeamViewSet
-from caustaza_backend_project.usersapp.views import UsersViewSet
+
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -17,6 +17,5 @@ router.register(r"services", ServiceViewSet, basename="services")
 router.register(r"about", AboutViewSet, basename="about")
 router.register(r"jobs", JobsViewSet, basename="jobs")
 router.register(r"teams", TeamViewSet, basename="teams")
-router.register(r"register", UsersViewSet, basename="usersapp")
-router.register(r"register", UsersViewSet, basename="userpayment")
+
 urlpatterns = router.urls
