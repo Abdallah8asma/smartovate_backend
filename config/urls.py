@@ -24,7 +24,7 @@ urlpatterns += [
         name="api-docs",
     ),
     path(
-         "create_checkout_session/<int:price>/'",
+         "create_checkout_session/<price>/",
             create_checkout_session,
             name="stripe_webhook" ),
 
