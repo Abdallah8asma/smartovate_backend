@@ -1,8 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 from config.settings import base
-from django.http import HttpResponseRedirect ,HttpResponse
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import EmailMessage
@@ -12,11 +12,15 @@ import stripe
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 import stripe
 from .models import Invoice
 
 import requests
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+
+from django.utils import timezone
 
 # Create your views here.
 
@@ -89,33 +93,32 @@ def stripe_webhook(request):
         print('**********',session_id)
         receiptEmail= session['receipt_email']
         print(receiptEmail)
-
-        # Retrieve the session ID stored in the session
-        # stored_session_id = request.session.get('id', None)
-
-        # if stored_session_id == session_id:
-            # Send an invoice to the customer's email
-        customer_email = session['receipt_email']
-        print('*******',customer_email)
         amount_total = session['amount']
         print('*******',amount_total)
         currency = session['currency']
         print('*******',currency)
 
         #encode session_id
-        session_idencoded=session_id.encode()
+        token = urlsafe_base64_encode(force_bytes(session_id))
+#         # Embed the expiration timestamp in the token
+        expiration_timestamp = int((timezone.now() + timezone.timedelta(days=1)).timestamp())
+        # token = f"{default_token_generator.make_token(session_idencoded)}-{expiration_timestamp}"
+        # token = {
+        #   'session_id': session_id,
+        #   'expiration_timestamp': expiration_timestamp,
+        #   }
+
 
         #Store the encoded session_id in the database
-        invoice = Invoice(session_idencoded)
+        invoice = Invoice(token=token)
         invoice.save()
+        print("Token saved:", token)
 
         subject = 'Invoice for your purchase'
         body = f'''Thank you for your purchase! Here is your invoice for {amount_total} {currency}
-        https://dev.app.smartovate.com/landing-page?token={session_idencoded}'''
-        from_email = 'hajer.boukhari@caustaza.com'
-            #lazem:encodih
-            #formedepersistance
-        to_email = [customer_email]
+        https://dev.app.smartovate.com/landing-page?token={token}'''
+        from_email = 'support@smartovate.com'
+        to_email = [receiptEmail]
 
         email = EmailMessage(
             subject,
@@ -154,26 +157,30 @@ def stripe_webhook(request):
 
 
 @csrf_exempt
-def webhook(request):
-    token_from_request = request.GET.get('token').decode()
+def webhook(request,received_token):
+    if received_token is not None:
 
-    if token_from_request is not None:
+     # Decode the received token
+
+
+
         try:
-          token_existing = Invoice.objects.get(stored_session_id=token_from_request)
+          mytoken =force_bytes(urlsafe_base64_decode(received_token))
+          token_existing = Invoice.objects.get(token=mytoken)
 
-          customer_email = token_existing['customer_email']
-          amount_total = token_existing['amount_total']
-          currency = token_existing['currency']
+        #   receiptEmail = token_existing['receiptEmail']
+        #   amount_total = token_existing['amount_total']
+        #   currency = token_existing['currency']
 
-          response_data = {
-                'success': True,
-                'message': 'Token is valid',
-                'customer_email': customer_email,
-                'amount_total': amount_total,
-                'currency': currency,
-            }
+        #   response_data = {
+        #         'success': True,
+        #         'message': 'Token is valid',
+        #         'receiptEmail': receiptEmail,
+        #         'amount_total': amount_total,
+        #         'currency': currency,
+        #     }
 
-          return JsonResponse(response_data)
+          return JsonResponse(token_existing)
 
         except Invoice.DoesNotExist:
 

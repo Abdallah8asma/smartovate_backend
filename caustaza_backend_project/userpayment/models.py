@@ -1,7 +1,7 @@
 from django.db import models
 
 class Invoice(models.Model):
-    stored_session = models.TextField()  # Field to store the encoded clientSecret
+    token = models.TextField()  # Field to store the encoded clientSecret
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
