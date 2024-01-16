@@ -42,7 +42,7 @@ def create_checkout_session(request, price):
                     "product_data": {
                         "name": "plans",
                     },
-                    "unit_amount": int(price) * 100,
+                    "unit_amount": int(price),
                 },
                 "quantity": 1,
             }
