@@ -8,7 +8,7 @@ from rest_framework import status
 from django.core.mail import EmailMessage
 import json
 import stripe
-
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -98,21 +98,15 @@ def stripe_webhook(request):
         currency = session['currency']
         print('*******',currency)
 
+        invoice = Invoice(token=session_id, receipt_email=receiptEmail, amount=amount_total,currency=currency)
+        invoice.save()
+        print("Token saved:", invoice)
         #encode session_id
         token = urlsafe_base64_encode(force_bytes(session_id))
+        print("my token is:",token)
 #         # Embed the expiration timestamp in the token
         expiration_timestamp = int((timezone.now() + timezone.timedelta(days=1)).timestamp())
-        # token = f"{default_token_generator.make_token(session_idencoded)}-{expiration_timestamp}"
-        # token = {
-        #   'session_id': session_id,
-        #   'expiration_timestamp': expiration_timestamp,
-        #   }
 
-
-        #Store the encoded session_id in the database
-        invoice = Invoice(token=token)
-        invoice.save()
-        print("Token saved:", token)
 
         subject = 'Invoice for your purchase'
         body = f'''Thank you for your purchase! Here is your invoice for {amount_total} {currency}
@@ -155,38 +149,30 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
-
 @csrf_exempt
-def webhook(request,received_token):
-    if received_token is not None:
+def webhook(request, received_token):
+    try:
+        # Decode the received token
 
-     # Decode the received token
+        decoded_token = urlsafe_base64_decode(received_token)
+        decoded_token_str = decoded_token.decode()
 
 
 
-        try:
-          mytoken =force_bytes(urlsafe_base64_decode(received_token))
-          token_existing = Invoice.objects.get(token=mytoken)
+        # Retrieve the invoice using the decoded token
+        invoice = Invoice.objects.get(token=decoded_token_str)
 
-        #   receiptEmail = token_existing['receiptEmail']
-        #   amount_total = token_existing['amount_total']
-        #   currency = token_existing['currency']
+        #Prepare the response data
+        response_data = {
+            'success': True,
+            'message': 'Token is valid',
+            'receipt_email': invoice.receipt_email,
+            'amount_total': invoice.amount,
+            'currency': invoice.currency,
+        }
 
-        #   response_data = {
-        #         'success': True,
-        #         'message': 'Token is valid',
-        #         'receiptEmail': receiptEmail,
-        #         'amount_total': amount_total,
-        #         'currency': currency,
-        #     }
+        return JsonResponse(response_data)
 
-          return JsonResponse(token_existing)
-
-        except Invoice.DoesNotExist:
-
-            return JsonResponse({'error': 'Invalid token'}, status=400)
-    else:
-
-        return JsonResponse({'error': 'Token is missing from the request'}, status=400)
-
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Invalid token'}, status=400)
 
