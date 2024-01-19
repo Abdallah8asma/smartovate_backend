@@ -98,10 +98,6 @@ def generate_invoice_pdf(session):
     p.setFont("Helvetica-Bold", 10)
     p.drawString(100, 630, f"Please print/record this information and keep in a safe place.")
 
-      # Add the bold text
-    # bold_text = "Please print/record this information and keep in a safe place."
-    # p.setFont("Helvetica-Bold", 10)  # Set font to bold
-    # p.drawCentredString(100, 630, bold_text)
 
     welcome_paragraph = (
         "Thank you for choosing Smartovate! \n We are thrilled to welcome you to our Plan.\n"
@@ -159,11 +155,10 @@ def stripe_webhook(request):
         )
 
     except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
+
         print('Invalid signature:', e)
         return JsonResponse({'error': 'Invalid signature'}, status=400)
 
-     # Handle the event
     if event['type'] == 'payment_intent.succeeded':
         session = event['data']['object']
 
@@ -187,8 +182,7 @@ def stripe_webhook(request):
         with open(pdf_invoice, 'wb') as pdf_file:
             pdf_file.write(pdf_content)
 
-
-
+        #email content
         subject = 'Invoice for your purchase'
         body = f'''Thank you for your purchase! Here is your invoice for {amount_total} {currency}
         https://dev.app.smartovate.com/landing-page?token={token}'''
@@ -208,12 +202,13 @@ def stripe_webhook(request):
         except Exception as e:
               print(f"Error sending email: {e}")
 
-    elif event['type'] == 'payment_intent.payment_failed':
-        # Handle payment failures
-        session = event['data']['object']
-        customer_email = session.get('customer_email', None)
 
-        if customer_email:
+    elif event['type'] == 'payment_intent.payment_failed':
+
+        session = event['data']['object']
+        receiptEmail= session['receipt_email']
+
+        if receiptEmail:
             # Send an email to the customer about the payment failure
             subject = 'Payment Failed for Your Purchase'
             body = 'We regret to inform you that your payment has failed. Please check your payment details and try again.'
@@ -229,6 +224,7 @@ def stripe_webhook(request):
         email.send()
 
     return HttpResponse(status=200)
+
 
 @csrf_exempt
 def webhook(request, received_token):
