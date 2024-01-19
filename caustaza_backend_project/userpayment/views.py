@@ -24,7 +24,7 @@ from django.utils import timezone
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
-
+import os
 
 # Create your views here.
 
@@ -144,8 +144,6 @@ def generate_invoice_pdf(session):
 def stripe_webhook(request):
     endpoint_secret = base.STRIPE_ENDPOINT_SECRET
 
-
-    #payload = request.body.decode('utf-8')
     payload = request.body
     sig_header = request.headers.get('Stripe-Signature', None)
 
@@ -177,8 +175,13 @@ def stripe_webhook(request):
 
         #  generate the PDF content
         pdf_content = generate_invoice_pdf(session)
+
+        invoices_pdf = 'invoices'
+        if not os.path.exists(invoices_pdf):
+           os.makedirs(invoices_pdf)
+
          # Save the PDF content to a file
-        pdf_invoice = f'Smartove_invoice_{session_id}.pdf'
+        pdf_invoice = os.path.join(invoices_pdf,f'Smartove_invoice_{session_id}.pdf')
         with open(pdf_invoice, 'wb') as pdf_file:
             pdf_file.write(pdf_content)
 
