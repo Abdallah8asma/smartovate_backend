@@ -14,13 +14,17 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from .models import Invoice
-
+from reportlab.lib.pagesizes import letter
 import requests
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
+
 
 from django.utils import timezone
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+
 
 # Create your views here.
 
@@ -63,7 +67,82 @@ def create_checkout_session(request, price):
        )
 
 
+def generate_invoice_pdf(session):
 
+    receiptEmail= session['receipt_email']
+    amount_total = session['amount']
+    currency = session['currency']
+
+    buffer = BytesIO()
+
+    p = canvas.Canvas(buffer)
+
+
+    p.setFont("Helvetica-Bold", 16)
+    rgb_color = (255/255, 111/255, 125/255)
+    p.setFillColorRGB(*rgb_color)
+    p.drawCentredString(300, 780, "Smartovate Plan Invoice")
+
+    p.setFont("Helvetica-Oblique", 12)
+    p.setFillColor(colors.black)
+
+    p.drawString(100, 710,f"Receipt Email: {receiptEmail}")
+    p.drawString(100, 690, f"Amount Total: {amount_total} {currency}")
+
+    rgb_color = (128/255,128/255,128/255)
+    p.setFillColorRGB(*rgb_color)
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(100, 650, f"Congratulations on successfully registering as a customer with Smartovate")
+
+    p.setFillColor(colors.black)
+    p.setFont("Helvetica-Bold", 10)
+    p.drawString(100, 630, f"Please print/record this information and keep in a safe place.")
+
+      # Add the bold text
+    # bold_text = "Please print/record this information and keep in a safe place."
+    # p.setFont("Helvetica-Bold", 10)  # Set font to bold
+    # p.drawCentredString(100, 630, bold_text)
+
+    welcome_paragraph = (
+        "Thank you for choosing Smartovate! \n We are thrilled to welcome you to our Plan.\n"
+        "Your gateway to a world of cutting-edge tools and services designed to elevate your organization \n"
+        "to new heights. We are excited to embark on this journey with you, offering a suite of innovative \n"
+        "solutions crafted to enhance  productivity, real-time collaboration, and fortify the security of \n"
+        "your operations.\n"
+
+        "If you have any questions or need assistance,  please feel free to reach out to our support team."
+
+    )
+
+
+    p.setFillColor(colors.black)
+
+    x, y, width, height = 100, 610, 500, 90
+    text_object = p.beginText(x, y)
+    text_object.setFont("Helvetica", 11)
+
+    lines = welcome_paragraph.split('\n')
+
+    for line in lines:
+        text_object.textLine(line)
+
+    p.drawText(text_object)
+
+     # Add a border around the entire page
+    border_width = 1  # You can adjust the border width as needed
+    page_width, page_height = p._pagesize
+    p.setFillColor(colors.black)
+    p.setLineWidth(border_width)
+    p.rect(border_width / 2, border_width / 2, page_width - border_width, page_height - border_width)
+
+
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    pdf_content = buffer.getvalue()
+
+    return pdf_content
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -90,22 +169,24 @@ def stripe_webhook(request):
 
         # Retrieve the session ID from the session
         session_id = session['id']
-        print('**********',session_id)
         receiptEmail= session['receipt_email']
-        print(receiptEmail)
         amount_total = session['amount']
-        print('*******',amount_total)
         currency = session['currency']
-        print('*******',currency)
 
         invoice = Invoice(token=session_id, receipt_email=receiptEmail, amount=amount_total,currency=currency)
         invoice.save()
-        print("Token saved:", invoice)
+
         #encode session_id
         token = urlsafe_base64_encode(force_bytes(session_id))
         print("my token is:",token)
-#         # Embed the expiration timestamp in the token
-        expiration_timestamp = int((timezone.now() + timezone.timedelta(days=1)).timestamp())
+
+        #  generate the PDF content
+        pdf_content = generate_invoice_pdf(session)
+         # Save the PDF content to a file
+        pdf_invoice = f'Smartove_invoice_{session_id}.pdf'
+        with open(pdf_invoice, 'wb') as pdf_file:
+            pdf_file.write(pdf_content)
+
 
 
         subject = 'Invoice for your purchase'
@@ -120,6 +201,7 @@ def stripe_webhook(request):
             from_email,
             to_email,
               )
+        email.attach_file(pdf_invoice)
         try:
               email.send()
               print("Email sent successfully")
@@ -131,12 +213,11 @@ def stripe_webhook(request):
         session = event['data']['object']
         customer_email = session.get('customer_email', None)
 
-
         if customer_email:
             # Send an email to the customer about the payment failure
             subject = 'Payment Failed for Your Purchase'
             body = 'We regret to inform you that your payment has failed. Please check your payment details and try again.'
-            from_email = 'hajer.boukhari@caustaza.com'
+            from_email = 'support@smartovate.com'
             to_email =session['receipt_email']
 
             email = EmailMessage(
@@ -153,13 +234,9 @@ def stripe_webhook(request):
 def webhook(request, received_token):
     try:
         # Decode the received token
-
         decoded_token = urlsafe_base64_decode(received_token)
         decoded_token_str = decoded_token.decode()
-
-
-
-        # Retrieve the invoice using the decoded token
+       # Retrieve the invoice using the decoded token
         invoice = Invoice.objects.get(token=decoded_token_str)
 
         #Prepare the response data
@@ -175,4 +252,6 @@ def webhook(request, received_token):
 
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Invalid token'}, status=400)
+
+
 
