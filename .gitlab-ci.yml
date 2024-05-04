@@ -16,28 +16,41 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-stages:          # List of stages for jobs, and their order of execution
-  - build
+stages:
   - test
+  - dockerize
   - deploy
 
-variables:
-  POSTGRES_USER: 'caustaza_backend_project'
-  POSTGRES_PASSWORD: ''
-  POSTGRES_DB: 'test_caustaza_backend_project'
-  POSTGRES_HOST_AUTH_METHOD: trust
+before_script:
+  - docker login -u smartovate-token -p $TODO_DEPLOY_TOKEN $CI_REGISTRY
 
-pytest:
+django_unit_tests:
   stage: test
-  image: docker/compose:1.29.2
-  tags:
-    - docker
-  services:
-    - docker:dind
-  before_script:
-    - docker-compose -f local.yml build django
-    # Ensure celerybeat does not crash due to non-existent tables
-    - docker-compose -f local.yml run --rm django python manage.py migrate
-    - docker-compose -f local.yml up -d
   script:
-    - docker image ls
+    - source C:\Users\ferie\OneDrive\Bureau\projet devops\smartovate-backend/bin/activate
+    - pip install -U -r requirements.txt
+    - python manage.py test --noinput
+    - deactivate
+  tags:
+    - smartovate-runner
+
+generate_container:
+  stage: dockerize
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --pull --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:dev .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:dev
+  tags:
+    - smartovate-runner
+
+deploy_to_test:
+  stage: deploy
+  script:
+    - docker stop todo_backend || true
+    - docker update --restart=no smartovate_backend || true
+    - docker rm smartovate_backend_old || true
+    - docker rename smartovate_backend smartovate_backend_old || true
+    - docker run -d --name smartovate_backend --restart=always -p 8000:8000 $CI_REGISTRY_IMAGE:dev
+  tags:
+    - smartovate-runner
