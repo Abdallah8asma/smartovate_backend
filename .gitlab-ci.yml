@@ -22,7 +22,7 @@ stages:
   - deploy
 
 before_script:
-  - docker login -u smartovate-token -p $TODO_DEPLOY_TOKEN $CI_REGISTRY
+  - docker login -u smartovate-token -p $Smartovate Deploy Token $CI_REGISTRY
 
 django_unit_tests:
   stage: test
