@@ -18,11 +18,7 @@
 
 stages:
   - test
-  - dockerize
-  - deploy
-
-before_script:
-  - docker login -u smartovate-token -p $Smartovate Deploy Token $CI_REGISTRY
+  
 
 django_unit_tests:
   stage: test
@@ -34,23 +30,3 @@ django_unit_tests:
   tags:
     - smartovate-runner
 
-generate_container:
-  stage: dockerize
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --pull --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:dev .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:dev
-  tags:
-    - smartovate-runner
-
-deploy_to_test:
-  stage: deploy
-  script:
-    - docker stop todo_backend || true
-    - docker update --restart=no smartovate_backend || true
-    - docker rm smartovate_backend_old || true
-    - docker rename smartovate_backend smartovate_backend_old || true
-    - docker run -d --name smartovate_backend --restart=always -p 8000:8000 $CI_REGISTRY_IMAGE:dev
-  tags:
-    - smartovate-runner
