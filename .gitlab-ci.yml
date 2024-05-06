@@ -19,7 +19,6 @@
 stages:
   - test
   
-
 django_unit_tests:
   stage: test
   script:
