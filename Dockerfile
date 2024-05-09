@@ -9,10 +9,10 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        gcc \
-        build-essential \
-        apt-utils \
-        libpq-dev \
+    gcc \
+    build-essential \
+    apt-utils \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
@@ -32,4 +32,6 @@ COPY . /app/
 RUN python manage.py collectstatic --noinput
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "your_project_name.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
