@@ -6,7 +6,7 @@ stages:
 
 build-job:
   tags:
-    - docker
+    - django
   stage: build
   script:
     - echo "creating virtual environment for the project..."
@@ -23,7 +23,7 @@ build-job:
 
 test-job:
   tags:
-    - docker
+    - django
   stage: test
   script:
     - echo "Activating virtual environment..."
@@ -43,7 +43,7 @@ variables:
 
 release-job:
   tags:
-    - docker
+    - django
   stage: release
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -56,7 +56,7 @@ release-job:
 # Deploy petclinic
 deploy-job:
   tags:
-    - docker
+    - django
   stage: deploy
 
   script:
