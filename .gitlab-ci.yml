@@ -7,12 +7,12 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   CI_REGISTRY_USER: "walidmbarek"
   CI_REGISTRY_PASSWORD: "walid123$"
-  CI_REGISTRY: "walidmbarek/gitlabdjango"
+  CI_REGISTRY: "registry.gitlab.com"
 
 stages:
   - test
   - build
-  - deploy
+  #- deploy
 
 unit_test:
   stage: test
@@ -21,73 +21,14 @@ unit_test:
     # Add your unit testing commands here
     - echo "Test cases completed"
 
-  tags:
-    - docker
 
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "dev"  # Adjust this condition based on your branch naming convention
-    - changes:
-        - Dockerfile
+
+
 
 dev_build_image:
   stage: build
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY:dev-latest .
-    - docker push $CI_REGISTRY:dev-latest
+    - docker build -t registry.gitlab.com/test1242319/backdjango .
+    - docker push registry.gitlab.com/test1242319/backdjango
 
-  tags:
-    - docker
-
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "dev"
-    - changes:
-        - Dockerfile
-
-staging_build_image:
-  stage: deploy
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - if [[ "$CI_COMMIT_REF_NAME" == "staging" && "$CI_COMMIT_TITLE" =~ ^stg-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        docker build -t $CI_REGISTRY:$CI_COMMIT_TITLE .
-        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-aws
-        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-docker
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-aws
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-docker
-      else
-        echo "Invalid staging branch commit message. Deployment failed."
-        exit 1
-      fi
-
-  tags:
-    - docker
-
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "staging"
-    - changes:
-        - Dockerfile
-
-production_build_image:
-  stage: deploy
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - if [[ "$CI_COMMIT_REF_NAME" == "main" && "$CI_COMMIT_TITLE" =~ ^prod-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        docker build -t $CI_REGISTRY:$CI_COMMIT_TITLE .
-        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-aws
-        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-docker
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-aws
-        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-docker
-      else
-        echo "Invalid production branch commit message. Deployment failed."
-        exit 1
-      fi
-
-  tags:
-    - docker
-
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main"
-    - changes:
-        - Dockerfile
