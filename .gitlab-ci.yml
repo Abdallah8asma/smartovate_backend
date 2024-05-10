@@ -5,16 +5,39 @@ services:
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
+  CI_REGISTRY_USER: "walidmbarek"
+  CI_REGISTRY_PASSWORD: "walid123$"
+  CI_REGISTRY: "walidmbarek/gitlabdjango"
 
 stages:
+  - test
   - build
+  - deploy
+
+unit_test:
+  stage: test
+  script:
+    - echo "Starting unit test"
+    # Add your unit testing commands here
+    - echo "Test cases completed"
+
+  tags:
+    - docker
+
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"  # Adjust this condition based on your branch naming convention
+    - changes:
+        - Dockerfile
 
 dev_build_image:
   stage: build
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:dev-latest .
-    - docker push $CI_REGISTRY_IMAGE:dev-latest
+    - docker build -t $CI_REGISTRY:dev-latest .
+    - docker push $CI_REGISTRY:dev-latest
+
+  tags:
+    - docker
 
   rules:
     - if: $CI_COMMIT_REF_NAME == "dev"
@@ -22,16 +45,23 @@ dev_build_image:
         - Dockerfile
 
 staging_build_image:
-  stage: build
+  stage: deploy
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - if [[ "$CI_COMMIT_REF_NAME" == "staging" && "$CI_COMMIT_TITLE" =~ ^stg-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TITLE .;
-        docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TITLE;
+        docker build -t $CI_REGISTRY:$CI_COMMIT_TITLE .
+        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-aws
+        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-docker
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-aws
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-docker
       else
-        echo "Invalid staging branch commit message. Build failed.";
-        exit 1;
+        echo "Invalid staging branch commit message. Deployment failed."
+        exit 1
       fi
+
+  tags:
+    - docker
 
   rules:
     - if: $CI_COMMIT_REF_NAME == "staging"
@@ -39,16 +69,23 @@ staging_build_image:
         - Dockerfile
 
 production_build_image:
-  stage: build
+  stage: deploy
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - if [[ "$CI_COMMIT_REF_NAME" == "main" && "$CI_COMMIT_TITLE" =~ ^prod-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TITLE .;
-        docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TITLE;
+        docker build -t $CI_REGISTRY:$CI_COMMIT_TITLE .
+        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-aws
+        docker tag $CI_REGISTRY:$CI_COMMIT_TITLE $CI_REGISTRY:$CI_COMMIT_TITLE-docker
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-aws
+        docker push $CI_REGISTRY:$CI_COMMIT_TITLE-docker
       else
-        echo "Invalid production branch commit message. Build failed.";
-        exit 1;
+        echo "Invalid production branch commit message. Deployment failed."
+        exit 1
       fi
+
+  tags:
+    - docker
 
   rules:
     - if: $CI_COMMIT_REF_NAME == "main"
