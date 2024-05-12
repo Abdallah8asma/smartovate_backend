@@ -4,7 +4,7 @@ services:
   - docker:20.10.17-dind
 
 #variables:
- # DOCKER_TLS_CERTDIR: "/certs"
+
   #CI_REGISTRY_USER: "walidmbarek"
   #CI_REGISTRY_PASSWORD: "walid123$"
   #CI_REGISTRY: "registry.gitlab.com"
