@@ -3,11 +3,8 @@ image: docker:20.10.17
 services:
   - docker:20.10.17-dind
 
-#variables:
 
-  #CI_REGISTRY_USER: "walidmbarek"
-  #CI_REGISTRY_PASSWORD: "walid123$"
-  #CI_REGISTRY: "registry.gitlab.com"
+
 
 stages:
   - test
