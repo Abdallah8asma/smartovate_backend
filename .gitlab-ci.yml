@@ -16,6 +16,7 @@ default:
     - apt -y install apt-utils
     - apt -y install net-tools python3.8 python3-pip mysql-client libmysqlclient-dev
     - apt -y upgrade
+    - apt-get install libpq-dev
     - pip3 install -r requirements/base.txt
     - pip3 install -r requirements/local.txt
     - pip3 install -r requirements/production.txt
