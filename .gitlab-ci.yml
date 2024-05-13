@@ -10,8 +10,8 @@ build-job:
   stage: build
   script:
     - echo "creating virtual environment for the project..."
-    - virtualenv $(pwd)/venv
-    - source $(pwd)/venv/bin/activate
+    - virtualenv $(pwd)/envs
+    - source $(pwd)/envs/bin/activate
     - echo "Installing requirements..."
     - pip install -r requirements.txt
     - deactivate
