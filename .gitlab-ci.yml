@@ -35,7 +35,7 @@ unit_test:
    - docker
   script:
     - echo "Starting unit test"
-    # Add your unit testing commands here
+    # Add your unit testing commands here !
     - echo "Test cases completed"
 
 
