@@ -3,7 +3,7 @@ stages:
   - security_scan
 
 before_script:
-  - echo "installing AWS CLI"
+  - echo "Installing AWS CLI"
   - apk add --no-cache curl jq python3 py3-pip
   - apk add --no-cache aws-cli
   - apk add --no-cache openssl
@@ -13,14 +13,17 @@ before_script:
   - aws --version
   - docker --version
   - aws configure list
-  #smartovate
 
 push_to_ecr:
   stage: build
   image:
     name: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   script:
     - unset DOCKER_HOST
     - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
