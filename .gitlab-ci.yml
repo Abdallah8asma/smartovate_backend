@@ -1,31 +1,54 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
-
 stages:
-  - test
-  
-django_unit_tests:
-  stage: test
-  script:
-    - source C:\Users\ferie\OneDrive\Bureau\projet devops\smartovate-backend/bin/activate
-    - pip install -U -r requirements.txt
-    - python manage.py test --noinput
-    - deactivate
-  tags:
-    - smartovate-runner
+  - build
+  - security_scan
 
+before_script:
+  - echo "installing AWS CLI"
+  - apk add --no-cache curl jq python3 py3-pip
+  - apk add --no-cache aws-cli
+  - apk add --no-cache openssl
+  - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+  - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+  - aws configure set default.region ${AWS_DEFAULT_REGION}
+  - aws --version
+  - docker --version
+  - aws configure list
+  #smartovate
+
+push_to_ecr:
+  stage: build
+  image:
+    name: docker:latest
+  services:
+    - docker:dind
+  script:    
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
+    - docker build -t smartovate_backend:v1 .
+    - docker tag smartovate_frontend:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
+    - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
+    - cd nginx
+    - openssl genrsa -out smartovate.key 4096
+    - openssl req -new -x509 -days 3650 -key smartovate.key -out smartovate.cert -subj "/C=UK/ST=London/L=London/O=Caustaza Group LTD/CN=smartovate.io"
+    - docker build -t nginx:v1 .
+    - docker tag nginx:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
+    - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
+  tags:
+    - docker
+    - aws
+
+security_scan:
+  stage: security_scan
+  before_script:
+    - apt-get update && apt-get install -y curl
+    - apt-get install -y awscli
+    - apt-get install -y docker.io
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
+  script:
+    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.1
+    - trivy --no-progress --output scanning-report.txt $ECR_REGISTRY_URL/$ECR_REPO_NAME:frontend
+  artifacts:
+    reports:
+      container_scanning: scanning-report.txt
+  tags:
+    - docker
+    - aws
