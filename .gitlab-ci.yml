@@ -22,10 +22,10 @@ push_to_ecr:
   services:
     - docker:dind
   script:    
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
-    - docker build -t smartovate_backend:v1 .
-    - docker tag smartovate_frontend:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
-    - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
+    - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
+    - docker build -t smartovate_repo .
+    - docker tag smartovate_repo:latest 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
+    - docker push 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
     - cd nginx
     - openssl genrsa -out smartovate.key 4096
     - openssl req -new -x509 -days 3650 -key smartovate.key -out smartovate.cert -subj "/C=UK/ST=London/L=London/O=Caustaza Group LTD/CN=smartovate.io"
