@@ -45,3 +45,7 @@ security_scan:
   artifacts:
     reports:
       container_scanning: scanning-report.txt
+
+tags:
+  - docker
+  - aws
