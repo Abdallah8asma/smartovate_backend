@@ -13,7 +13,6 @@ before_script:
   - aws --version
   - docker --version
   - aws configure list
-  - sudo chmod 666 /var/run/docker.sock
   #smartovate
 
 push_to_ecr:
