@@ -31,6 +31,9 @@ push_to_ecr:
     - docker build -t nginx:v1 .
     - docker tag nginx:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
     - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
+  tags:
+    - docker
+    - aws
 
 security_scan:
   stage: security_scan
@@ -45,7 +48,6 @@ security_scan:
   artifacts:
     reports:
       container_scanning: scanning-report.txt
-
-tags:
-  - docker
-  - aws
+  tags:
+    - docker
+    - aws
