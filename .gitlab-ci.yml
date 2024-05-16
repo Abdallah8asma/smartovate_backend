@@ -13,16 +13,16 @@ before_script:
   - aws --version
   - docker --version
   - aws configure list
-  #smartovate
 
 push_to_ecr:
   stage: build
-  image:
-    name: docker:latest
+  image: docker:latest
   services:
     - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
   script:    
-    - unset DOCKER_HOST
     - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
     - docker build -t smartovate_repo .
     - docker tag smartovate_repo:latest 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
@@ -39,6 +39,12 @@ push_to_ecr:
 
 security_scan:
   stage: security_scan
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
   before_script:
     - apt-get update && apt-get install -y curl
     - apt-get install -y awscli
