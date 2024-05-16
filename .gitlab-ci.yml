@@ -13,6 +13,7 @@ before_script:
   - aws --version
   - docker --version
   - aws configure list
+  #smartovate
 
 push_to_ecr:
   stage: build
