@@ -22,7 +22,7 @@ push_to_ecr:
   services:
     - docker:dind
   script:    
-    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
     - docker build -t smartovate_backend:v1 .
     - docker tag smartovate_frontend:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
     - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
@@ -42,7 +42,7 @@ security_scan:
     - apt-get update && apt-get install -y curl
     - apt-get install -y awscli
     - apt-get install -y docker.io
-    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
   script:
     - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.1
     - trivy --no-progress --output scanning-report.txt $ECR_REGISTRY_URL/$ECR_REPO_NAME:frontend
