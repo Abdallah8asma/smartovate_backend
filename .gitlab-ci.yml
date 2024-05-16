@@ -22,7 +22,6 @@ push_to_ecr:
   services:
     - docker:dind
   script:    
-    - sudo chmod 666 /var/run/docker.sock
     - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
     - docker build -t smartovate_backend:v1 .
     - docker tag smartovate_frontend:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:backend
