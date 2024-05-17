@@ -36,9 +36,10 @@ push_to_ecr:
 security_scan:
   stage: security_scan
   before_script:
-    - apt-get update && apt-get install -y curl
-    - apt-get install -y awscli
-    - apt-get install -y docker.io
+    - apk update
+    - apk add curl
+    - apk add aws-cli
+    - apk add docker
     - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
   script:
     - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.1
