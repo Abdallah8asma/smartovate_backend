@@ -5,7 +5,7 @@ stages:
 before_script:
   - echo "Installing AWS CLI"
   - apk add --no-cache curl jq python3 py3-pip
-  - apk add --no-cache aws-cli
+  - pip3 install awscli
   - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
   - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
   - aws configure set default.region us-east-1
@@ -25,10 +25,10 @@ push_to_ecr:
     DOCKER_TLS_CERTDIR: ""
   script:
     - unset DOCKER_HOST
-    - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
     - docker build -t smartovate_repo .
-    - docker tag smartovate_repo:latest 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
-    - docker push 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
+    - docker tag smartovate_repo:latest 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
+    - docker push 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
   tags:
     - docker
     - aws
@@ -36,14 +36,13 @@ push_to_ecr:
 security_scan:
   stage: security_scan
   before_script:
-    - apk update
-    - apk add curl
-    - apk add aws-cli
-    - apk add docker
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY_URL
+    - apt-get update && apt-get install -y curl
+    - apt-get install -y awscli
+    - apt-get install -y docker.io
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
   script:
     - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.1
-    - trivy --no-progress --output scanning-report.txt $ECR_REGISTRY_URL/$ECR_REPO_NAME:frontend
+    - trivy --no-progress --output scanning-report.txt 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
   artifacts:
     reports:
       container_scanning: scanning-report.txt
