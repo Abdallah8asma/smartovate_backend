@@ -6,7 +6,6 @@ before_script:
   - echo "Installing AWS CLI"
   - apk add --no-cache curl jq python3 py3-pip
   - apk add --no-cache aws-cli
-  - apk add --no-cache openssl
   - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
   - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
   - aws configure set default.region us-east-1
@@ -30,13 +29,6 @@ push_to_ecr:
     - docker build -t smartovate_repo .
     - docker tag smartovate_repo:latest 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
     - docker push 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
-    - mkdir -p nginx
-    - cd nginx
-    - openssl genrsa -out smartovate.key 4096
-    - openssl req -new -x509 -days 3650 -key smartovate.key -out smartovate.cert -subj "/C=UK/ST=London/L=London/O=Caustaza Group LTD/CN=smartovate.io"
-    - docker build -t nginx:v1 .
-    - docker tag nginx:v1 $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
-    - docker push $ECR_REGISTRY_URL/$ECR_REPO_NAME:nginx
   tags:
     - docker
     - aws
