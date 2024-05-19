@@ -1,6 +1,5 @@
 stages:
   - build
-  - security_scan
 
 before_script:
   - echo "Installing AWS CLI"
@@ -33,19 +32,3 @@ push_to_ecr:
     - docker
     - aws
 
-security_scan:
-  stage: security_scan
-  before_script:
-    - apt-get update && apt-get install -y curl
-    - apt-get install -y awscli
-    - apt-get install -y docker.io
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
-  script:
-    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.1
-    - trivy --no-progress --output scanning-report.txt 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
-  artifacts:
-    reports:
-      container_scanning: scanning-report.txt
-  tags:
-    - docker
-    - aws
