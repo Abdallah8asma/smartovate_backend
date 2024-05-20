@@ -1,14 +1,17 @@
 stages:
   - build
 before_script:
-  - echo "Installing AWS CLI"
+  - echo "Installing AWS CLI dependencies"
   - apk add --no-cache curl jq python3 py3-pip
-  - pip3 install awscli
+  - pip3 install virtualenv
+  - virtualenv awscli-venv
+  - source awscli-venv/bin/activate
+  - pip install awscli
+  - aws --version
+  - docker --version
   - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
   - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
   - aws configure set default.region us-east-1
-  - aws --version
-  - docker --version
   - aws configure list
 
 push_to_ecr:
@@ -23,6 +26,7 @@ push_to_ecr:
     DOCKER_TLS_CERTDIR: ""
   script:
     - unset DOCKER_HOST
+    - source awscli-venv/bin/activate
     - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
     - docker build -t smartovate_repo .
     - docker tag smartovate_repo:latest 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
@@ -30,4 +34,3 @@ push_to_ecr:
   tags:
     - docker
     - aws
-
