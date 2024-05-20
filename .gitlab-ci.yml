@@ -3,8 +3,7 @@ stages:
 before_script:
   - echo "Installing AWS CLI dependencies"
   - apk add --no-cache curl jq python3 py3-pip
-  - pip3 install virtualenv
-  - virtualenv awscli-venv
+  - python3 -m venv awscli-venv
   - source awscli-venv/bin/activate
   - pip install awscli
   - aws --version
