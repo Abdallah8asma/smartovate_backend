@@ -26,10 +26,10 @@ push_to_ecr:
   script:
     - unset DOCKER_HOST
     - source awscli-venv/bin/activate
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
+    - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
     - docker build -t smartovate_repo .
-    - docker tag smartovate_repo:latest 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
-    - docker push 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartovate_repo:latest
+    - docker tag smartovate_repo:latest 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
+    - docker push 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo:latest
   tags:
     - docker
     - aws
