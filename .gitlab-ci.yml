@@ -1,8 +1,10 @@
-stages:
-  - build
-  - deploy
+image: docker:latest
+
+services:
+  - docker:dind
 
 variables:
+  DOCKER_DRIVER: overlay2
   AWS_DEFAULT_REGION: "eu-north-1"
   ECR_REGISTRY: "905418230821.dkr.ecr.eu-north-1.amazonaws.com"
   ECR_REPOSITORY: "my-django-app"
@@ -10,18 +12,15 @@ variables:
 
 before_script:
   - apk update && apk add --no-cache curl jq python3 py3-pip
-  - apk add --no-cache docker
-  - service docker start
   - python3 -m venv /tmp/venv
   - . /tmp/venv/bin/activate
   - pip install awscli
-  - . /tmp/venv/bin/activate && aws --version
-  - . /tmp/venv/bin/activate && $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY)
+  - aws --version
+  - $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY)
 
 build:
   stage: build
   script:
-    - . /tmp/venv/bin/activate
     - echo "Building Docker image..."
     - docker build -t $ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA .
     - docker tag $ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA
@@ -33,7 +32,6 @@ build:
 deploy:
   stage: deploy
   script:
-    - . /tmp/venv/bin/activate
     - echo "Deploying to Kubernetes using Argo CD..."
     - kubectl apply -f deployment.yaml
   only:
