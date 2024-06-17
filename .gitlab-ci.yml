@@ -6,6 +6,7 @@ variables:
   AWS_DEFAULT_REGION: "eu-north-1"
   ECR_REGISTRY: "905418230821.dkr.ecr.eu-north-1.amazonaws.com"
   ECR_REPOSITORY: "my-django-app"
+  CLUSTER_NAME: "smartovate-cluster"
 
 before_script:
   - apk add --no-cache curl jq python3 py3-pip
@@ -27,8 +28,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo "Updating Kubernetes deployment..."
-    - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION
-    - kubectl set image deployment/my-django-app my-django-app=$ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA -n default
-only:
+    - echo "Deploying to Kubernetes using Argo CD..."
+    - kubectl apply -f deployment.yaml
+  only:
     - feriel
