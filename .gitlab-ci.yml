@@ -27,7 +27,7 @@ build:
     - echo "Pushing Docker image to ECR..."
     - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA
   only:
-    - main
+    - feriel
 
 deploy:
   stage: deploy
@@ -35,4 +35,4 @@ deploy:
     - echo "Triggering Argo CD sync..."
     - kubectl apply -f k8s-manifests/argo-cd.yaml
   only:
-    - main
+    - feriel
