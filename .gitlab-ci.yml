@@ -16,7 +16,8 @@ before_script:
   - . /tmp/venv/bin/activate
   - pip install awscli
   - aws --version
-  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+  - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.eu-north-1.amazonaws.com
+
 
 build:
   stage: build
