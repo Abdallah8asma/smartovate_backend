@@ -5,8 +5,8 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
-  AWS_DEFAULT_REGION: "us-east-1"
-  ECR_REGISTRY: "905418230821.dkr.ecr.us-east-1.amazonaws.com"
+  AWS_DEFAULT_REGION: "us-north-1"
+  ECR_REGISTRY: "905418230821.dkr.ecr.us-north-1.amazonaws.com"
   ECR_REPOSITORY: "smartovate_repo"
   CLUSTER_NAME: "smartovate-cluster"
 
@@ -16,7 +16,7 @@ before_script:
   - . /tmp/venv/bin/activate
   - pip install awscli
   - aws --version
-  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
 
 build:
   stage: build
@@ -27,12 +27,12 @@ build:
     - echo "Pushing Docker image to ECR..."
     - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA
   only:
-    - feriel
+    - main
 
 deploy:
   stage: deploy
   script:
-    - echo "Deploying to Kubernetes using Argo CD..."
-    - kubectl apply -f deployment.yaml
+    - echo "Triggering Argo CD sync..."
+    - kubectl apply -f k8s-manifests/argo-cd.yaml
   only:
-    - feriel
+    - main
