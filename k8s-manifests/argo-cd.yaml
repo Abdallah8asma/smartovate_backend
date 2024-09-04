@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://gitlab.com/feriel4/smartovate_backend.git
+    repoURL: git@gitlab.com:feriel4/smartovate_backend.git
     targetRevision: feriel
     path: k8s-manifests
   destination:
