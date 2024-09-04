@@ -6,11 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://gitlab.com/smartovate/smartovate-backend.git'
+    repoURL: https://gitlab.com/smartovate/smartovate-backend.git
     targetRevision: feriel
     path: k8s-manifests
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: dev
   syncPolicy:
     automated:
