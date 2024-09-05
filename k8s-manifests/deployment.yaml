@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: 905418230821.dkr.ecr.eu-north-1.amazonaws.com/my-django-app
+        image: 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo  
 
         ports:
         - containerPort: 8000
