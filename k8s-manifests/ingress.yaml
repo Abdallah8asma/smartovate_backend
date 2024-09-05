@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - dev.smartovate.io
+    - dev.smartovate.net
     secretName: smartovate-tls
   rules:
-  - host: dev.smartovate.io
+  - host: dev.smartovate.net
     http:
       paths:
       - path: /api
