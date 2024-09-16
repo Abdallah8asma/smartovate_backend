@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: 905418230821.dkr.ecr.eu-north-1.amazonaws.com/smartovate_repo  
+        image: 017820705556.dkr.ecr.eu-north-1.amazonaws.com/my-ecr-repo
+ 
 
         ports:
         - containerPort: 8000
