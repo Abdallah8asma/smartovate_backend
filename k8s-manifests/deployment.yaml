@@ -1,21 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1  # Spécifie la version de l'API Kubernetes utilisée pour ce déploiement
+kind: Deployment  # Indique que nous définissons un objet de type "Deployment"
 metadata:
-  name: smartovate-backend
+  name: smartovate-backend  # Nom du déploiement, utilisé pour identifier ce déploiement dans Kubernetes
 spec:
-  replicas: 2
+  replicas: 2  # Définit le nombre de répliques pour ce déploiement, ici nous avons deux instances du backend
   selector:
     matchLabels:
-      app: smartovate-backend
+      app: smartovate-backend  # Critère de sélection pour associer les Pods à ce déploiement, basé sur le label "app"
   template:
     metadata:
       labels:
-        app: smartovate-backend
+        app: smartovate-backend  # Label appliqué aux Pods créés par ce modèle de déploiement
     spec:
       containers:
-      - name: backend
-        image: 017820705556.dkr.ecr.eu-north-1.amazonaws.com/my-ecr-repo
- 
+      - name: backend  # Nom du conteneur
+        image: 017820705556.dkr.ecr.eu-north-1.amazonaws.com/my-ecr-repo  # Image Docker utilisée pour le conteneur, tirée de l'Amazon ECR
 
         ports:
-        - containerPort: 8000
+        - containerPort: 8000  # Définit le port exposé par le conteneur
