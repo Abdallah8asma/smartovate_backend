@@ -1,18 +1,18 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: argoproj.io/v1alpha1  # Spécifie la version de l'API ArgoCD utilisée pour définir l'application
+kind: Application  # Indique que nous créons un objet de type "Application" pour ArgoCD
 metadata:
-  name: backendd
-  namespace: argocd
+  name: backendd  # Nom de l'application, utilisé pour l'identifier dans ArgoCD
+  namespace: argocd  # Namespace dans lequel l'application ArgoCD est déployée (ici, "argocd")
 spec:
-  project: default
+  project: default  # Projet ArgoCD dans lequel cette application est associée, ici le projet par défaut
   source:
-    repoURL: git@gitlab.com:feriel4/smartovate_backend.git
-    targetRevision: feriel
-    path: k8s-manifests
+    repoURL: git@gitlab.com:feriel4/smartovate_backend.git  # URL du dépôt Git où se trouvent les manifests Kubernetes de l'application
+    targetRevision: feriel  # Branche ou révision Git à déployer, ici la branche "feriel"
+    path: k8s-manifests  # Chemin vers les manifests Kubernetes dans le dépôt Git
   destination:
-    server: https://kubernetes.default.svc
-    namespace: dev
+    server: https://kubernetes.default.svc  # Cluster Kubernetes cible où l'application sera déployée (ici, le cluster interne par défaut)
+    namespace: dev  # Namespace cible dans Kubernetes où les ressources seront déployées (ici, "dev")
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    automated:  # Indique que la synchronisation est automatisée pour cette application
+      prune: true  # Supprime les ressources obsolètes qui ne sont plus présentes dans Git
+      selfHeal: true  # Répare automatiquement toute dérive entre l'état actuel et l'état Git
