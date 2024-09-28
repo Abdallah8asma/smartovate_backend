@@ -5,9 +5,9 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
-  AWS_DEFAULT_REGION: "eu-north-1"
-  ECR_REGISTRY: "017820705556.dkr.ecr.eu-north-1.amazonaws.com"
-  ECR_REPOSITORY: "my-ecr-repo"
+  AWS_DEFAULT_REGION: "us-east-1"
+  ECR_REGISTRY: "905418230821.dkr.ecr.us-east-1.amazonaws.com/ecr-repo"
+  ECR_REPOSITORY: "ecr-repo"
   CLUSTER_NAME: "my-eks-cluster"
 
 before_script:
@@ -16,8 +16,7 @@ before_script:
   - . /tmp/venv/bin/activate
   - pip install awscli
   - aws --version
-  - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 017820705556.dkr.ecr.eu-north-1.amazonaws.com
-
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com
 
 
 build:
