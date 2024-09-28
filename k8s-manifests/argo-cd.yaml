@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1  # Spécifie la version de l'API ArgoCD utilisée pour définir l'application
 kind: Application  # Indique que nous créons un objet de type "Application" pour ArgoCD
 metadata:
-  name: backendd  # Nom de l'application, utilisé pour l'identifier dans ArgoCD
+  name: backend  # Nom de l'application, utilisé pour l'identifier dans ArgoCD
   namespace: argocd  # Namespace dans lequel l'application ArgoCD est déployée (ici, "argocd")
 spec:
   project: default  # Projet ArgoCD dans lequel cette application est associée, ici le projet par défaut
