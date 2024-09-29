@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend  # Nom du conteneur
-        image: 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartivate-backend  # Image Docker utilisée pour le conteneur, tirée de l'Amazon ECR
+        image: 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartivate-backend:latest  # Image Docker utilisée pour le conteneur, tirée de l'Amazon ECR
 
         ports:
         - containerPort: 8000  # Définit le port exposé par le conteneur
