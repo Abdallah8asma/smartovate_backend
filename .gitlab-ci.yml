@@ -6,7 +6,7 @@ services:
 variables:
   DOCKER_DRIVER: overlay2
   AWS_DEFAULT_REGION: "us-east-1"
-  ECR_REGISTRY: "905418230821.dkr.ecr.us-east-1.amazonaws.com/smartivate-backend"
+  ECR_REGISTRY: "864981720628.dkr.ecr.us-east-1.amazonaws.com/ecr-repo"
   ECR_REPOSITORY: "smartivate-backend"
   CLUSTER_NAME: "my-ekss-cluster"
 
@@ -16,7 +16,7 @@ before_script:
   - . /tmp/venv/bin/activate
   - pip install awscli
   - aws --version
-  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418230821.dkr.ecr.us-east-1.amazonaws.com/smartivate-backend
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 864981720628.dkr.ecr.us-east-1.amazonaws.com/ecr-repo
 
 build:
   stage: build
