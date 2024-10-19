@@ -7,7 +7,7 @@ variables:
   DOCKER_DRIVER: overlay2
   AWS_DEFAULT_REGION: "us-east-1"
   ECR_REGISTRY: "864981720628.dkr.ecr.us-east-1.amazonaws.com/ecr-repo"
-  ECR_REPOSITORY: "smartivate-backend"
+  ECR_REPOSITORY: "ecr-repo"
   CLUSTER_NAME: "my-ekss-cluster"
 
 before_script:
